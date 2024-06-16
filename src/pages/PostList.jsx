@@ -9,18 +9,18 @@ import { contentfulClient } from "../utils/createContentfulClient";
 
 function PostList(){
 
-    const[categories, setCategories] = useState([]);
+    const[categorias, setCategorias] = useState([]);
     const[posts, setPosts] = useState([]);
 
-    const [currentPage, setCurrentPage] = useState(1);
+    const [paginaAtual, setPaginaAtual] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
-    const getCategories = async () => {
+    const getcategorias = async () => {
         const response = await contentfulClient.getEntries({
             content_type: 'blogCategory', //qual a tabela?
         });
 
-        setCategories(response.items);
+        setCategorias(response.items);
     };
 
     const getPosts = async (page = 1) => {
@@ -48,14 +48,14 @@ function PostList(){
 
     const handlePageChange = (page) => {
         if (page < 1 || page > totalPages) return;
-        setCurrentPage(page);
+        setPaginaAtual(page);
     };
     
 
     useEffect(()=>{
-        getCategories();
-        getPosts(currentPage);
-    }, [currentPage]);//disparada no onload do componente home
+        getcategorias();
+        getPosts(paginaAtual);
+    }, [paginaAtual]);//disparada no onload do componente home
 
     return (
         <Layout>
@@ -66,27 +66,27 @@ function PostList(){
 
                         <nav className="mt-4">
                             <ul className="pagination justify-content-center">
-                            <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                            <li className={`page-item ${paginaAtual === 1 ? 'disabled' : ''}`}>
                                     <button className="page-link" onClick={() => handlePageChange(1)}>
                                         <span aria-hidden="true">&laquo;</span>
                                     </button>
                                 </li>
-                                <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                                    <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>
+                                <li className={`page-item ${paginaAtual === 1 ? 'disabled' : ''}`}>
+                                    <button className="page-link" onClick={() => handlePageChange(paginaAtual - 1)}>
                                         <span aria-hidden="true">&lt;</span>
                                     </button>
                                 </li>
                                 {[...Array(totalPages)].map((_, index) => (
-                                    <li key={index + 1} className={`page-item ${index + 1 === currentPage ? 'active' : ''}`}>
+                                    <li key={index + 1} className={`page-item ${index + 1 === paginaAtual ? 'active' : ''}`}>
                                         <button className="page-link" onClick={() => handlePageChange(index + 1)}>{index + 1}</button>
                                     </li>
                                 ))}
-                                <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                                    <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>
+                                <li className={`page-item ${paginaAtual === totalPages ? 'disabled' : ''}`}>
+                                    <button className="page-link" onClick={() => handlePageChange(paginaAtual + 1)}>
                                         <span aria-hidden="true">&gt;</span>
                                     </button>
                                 </li>
-                                <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                                <li className={`page-item ${paginaAtual === totalPages ? 'disabled' : ''}`}>
                                     <button className="page-link" onClick={() => handlePageChange(totalPages)}>
                                         <span aria-hidden="true">&raquo;</span>
                                     </button>
@@ -109,7 +109,7 @@ function PostList(){
                     <aside className="col-md-4">
                         <h2>Categorias</h2>
                         <ul>
-                            {categories.map( (item) => <li key={item.sys.id}>{item.fields.blogCategoryTitle}</li> )}
+                            {categorias.map( (item) => <li key={item.sys.id}>{item.fields.blogCategoryTitle}</li> )}
                         </ul>
                     </aside>
                 </div>   

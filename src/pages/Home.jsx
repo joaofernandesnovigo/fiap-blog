@@ -8,48 +8,45 @@ import { contentfulClient } from "../utils/createContentfulClient";
 
 function Home(){
 
-    const[categories, setCategories] = useState([]);
+    const[categorias, setCategorias] = useState([]);
     const[posts, setPosts] = useState([]);
 
-    const limit = 3;
+    const ultimosPosts = 3;
 
-    const getCategories = async () => {
+    const getCategorias = async () => {
         const response = await contentfulClient.getEntries({
-            content_type: 'blogCategory', //qual a tabela?
+            content_type: 'blogCategory',
         });
 
-        setCategories(response.items);
+        setCategorias(response.items);
     };
 
     const getPosts = async () => {
         try {
-            //--se a promise for resolvida
             const response = await contentfulClient.getEntries({
                 content_type: 'blogPost',
-                limit: limit,
+                limit: ultimosPosts,
                 order: '-sys.createdAt',
             });
             
             setPosts(response.items);
-            //console.log(response.items)
         } catch (error) {
-            //se a promise for rejeitada
             console.log("Erro ao obter posts", error);
         }
     };
 
 
     useEffect(()=>{
-        getCategories();
+        getCategorias();
         getPosts();
-    }, []);//disparada no onload do componente home
+    }, []);
 
     return (
         <Layout>
             <div className="container my-4">
                 <div className="row">
                     <main className="col-md-8">
-                        <h2 className="mb-3">{limit} Últimos posts</h2>
+                        <h2 className="mb-3">{ultimosPosts} Últimos posts</h2>
 
                         {posts.map((item) => (
                             <Card 
@@ -68,7 +65,7 @@ function Home(){
                     <aside className="col-md-4">
                         <h2>Categorias</h2>
                         <ul>
-                            {categories.map( (item) => <li key={item.sys.id}>{item.fields.blogCategoryTitle}</li> )}
+                            {categorias.map( (item) => <li key={item.sys.id}>{item.fields.blogCategoryTitle}</li> )}
                         </ul>
                     </aside>
                 </div>
